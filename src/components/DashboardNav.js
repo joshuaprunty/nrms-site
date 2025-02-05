@@ -16,7 +16,7 @@ export default function DashboardNavbar() {
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex-shrink-0">
-            <Link href="/" className="font-bold text-2xl text-blue-700">
+            <Link href="/" className="font-bold text-2xl">
               NRMS
             </Link>
           </div>

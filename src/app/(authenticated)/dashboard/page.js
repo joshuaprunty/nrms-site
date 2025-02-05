@@ -126,12 +126,12 @@ export default function Dashboard() {
       <h1 className="text-3xl font-bold my-2">Dashboard</h1>
       <p className="my-2">Welcome to your dashboard!</p>
       <Link href="/dashboard/create">
-        <Button className="w-full max-w-7xl my-2">+ Create Quiz</Button>
+        <Button className="w-full max-w-7xl my-2">+ Create New Story</Button>
       </Link>
       <Separator className="my-6 max-w-7xl" />
       {quizzes.length === 0 ? (
-        <p className="text-center text-gray-500">
-          No quizzes created yet. Create your first quiz!
+        <p className=" text-gray-500">
+          No stories created yet. Create your first story!
         </p>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl">
