@@ -17,7 +17,7 @@ export default function DashboardNavbar() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex-shrink-0">
             <Link href="/" className="font-bold text-2xl text-blue-700">
-              QuizWiz
+              NRMS
             </Link>
           </div>
           <NavigationMenu className="ml-auto">

@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "QuizWiz",
-  description: "AI-assisted quiz generation from study materials",
+  title: "NRMS",
+  description: "AI-assisted journalistic story generation",
 };
 
 export default function RootLayout({ children }) {
