@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 
 const navigationItems = [
   { href: "/dashboard", label: "Dashboard", icon: GoHome },
-  { href: "/dashboard/create", label: "Create New", icon: IoAddCircleOutline },
+  { href: "/dashboard/createstory", label: "Create New Story", icon: IoAddCircleOutline },
 ];
 
 export default function AuthenticatedLayout({ children }) {

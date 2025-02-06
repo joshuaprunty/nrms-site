@@ -125,7 +125,7 @@ export default function Dashboard() {
     <div className="p-8">
       <h1 className="text-3xl font-bold my-2">Dashboard</h1>
       <p className="my-2">Welcome to your dashboard!</p>
-      <Link href="/dashboard/create">
+      <Link href="/dashboard/createstory">
         <Button className="w-full max-w-7xl my-2">+ Create New Story</Button>
       </Link>
       <Separator className="my-6 max-w-7xl" />
