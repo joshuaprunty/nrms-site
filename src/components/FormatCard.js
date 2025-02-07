@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 
-const FormatCard = () => {
+const FormatCard = ({ title, description }) => {
   return (
     <Card className="h-full transition-transform duration-200 hover:scale-105">
       <div className="mt-12 mb-6 flex flex-col items-center justify-center">
@@ -34,8 +34,8 @@ const FormatCard = () => {
         />
       </div>
       <CardHeader className="p-4">
-        <CardTitle className="text-xl text-center">Title</CardTitle>
-        <CardDescription className="text-center text-lg">Description</CardDescription>
+        <CardTitle className="text-xl text-center">{title}</CardTitle>
+        <CardDescription className="text-center text-lg">{description}</CardDescription>
       </CardHeader>
     </Card>
   )

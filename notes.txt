@@ -17,3 +17,13 @@ OTHER
 5. General config (word count etc, cater to regions, tone, etc.)
 6. Generation dashboard - interactive editing
 7. Finish/save/export
+
+Notes
+- Figure out what our 'atomic units' are (eg breaking down an interview into question answer pairs)
+
+Types of Input
+- Interviews (audio or transcript)
+- Small notes or facts
+- Reference stories
+- Images/Video
+- Data/Numbers/Statistics set
