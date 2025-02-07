@@ -18,7 +18,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
-import { Plus } from "lucide-react"; // Make sure to install lucide-react
+import { Plus, Trash2 } from "lucide-react"; // Make sure to install lucide-react
+import { MdOutlineDelete } from "react-icons/md";
+import Link from "next/link";
 
 const UNIT_TYPES = [
   { value: "interview", label: "Interview Transcript" },
@@ -54,12 +56,18 @@ export default function StoryUnitUpload() {
     return text.length > 150 ? text.substring(0, 150) + "..." : text;
   };
 
+  const handleDeleteUnit = (id) => {
+    if (confirm("Are you sure you want to delete this story unit?")) {
+      setStoryUnits(storyUnits.filter(unit => unit.id !== id));
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-center">
         <Button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 px-12 w-full max-w-4xl"
           size="lg"
         >
           <Plus className="w-5 h-5" />
@@ -106,13 +114,21 @@ export default function StoryUnitUpload() {
         </DialogContent>
       </Dialog>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 max-w-4xl mx-auto">
         {storyUnits.map((unit) => (
           <Card key={unit.id}>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-sm font-medium">
                 {UNIT_TYPES.find(t => t.value === unit.type)?.label}
               </CardTitle>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleDeleteUnit(unit.id)}
+                className="h-8 w-8 p-0"
+              >
+                <Trash2 className="h-4 w-4 text-gray-500 hover:text-red-500" />
+              </Button>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600">
@@ -121,6 +137,17 @@ export default function StoryUnitUpload() {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+        <Link href="/dashboard/generation">
+          <Button
+            className="flex items-center gap-2 px-12 shadow-lg"
+            size="lg"
+          >
+            Continue
+          </Button>
+        </Link>
       </div>
     </div>
   );
