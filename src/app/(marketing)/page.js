@@ -24,7 +24,8 @@ export default function Home() {
     <main className="min-h-screen font-[family-name:var(--font-sans)]">
       <HeroSection backgroundColor="#f6f7fb">
         <div className="h-[50vh] flex items-center overflow-hidden">
-          <div className="w-1/2 h-full py-20 flex flex-col gap-8 items-center text-center justify-center z-10">
+          <div className="w-1/4 h-full"></div>
+          <div className="w-1/4 h-full py-20 flex flex-col gap-8 items-center text-center justify-center z-10">
             <h1 className="text-6xl font-bold text-gray-900">NRMS</h1>
             <p className="text-xl">Write professional journalistic stories with AI.</p>
             <Link href="/signup" passHref>
@@ -97,8 +98,8 @@ export default function Home() {
 
       <Section backgroundColor="#f6f7fb" className="flex items-center">
         <div className="py-16">
-          <h1 className="text-5xl font-semibold mb-12 text-center">Explore the Power of Flexible Story Creation</h1>
-          <p className="text-xl mb-12 text-center">Designed for creativity, precision, and efficiency, NRMS makes story authoring smarter and more versatile than ever before.</p>
+          <h1 className="text-5xl font-semibold mb-12 text-center">Additional Section</h1>
+          <p className="text-xl mb-12 text-center">Insert copy here later.</p>
           <Card className="w-full mx-auto my-12">
             <div className="grid grid-cols-1 md:grid-cols-2">
               <div className="relative h-[300px] md:h-full">
