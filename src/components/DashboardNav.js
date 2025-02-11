@@ -9,8 +9,42 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useEffect, useState } from "react";
+import { useAuthContext } from "@/context/AuthContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useRouter } from "next/navigation";
+import logout from "@/firebase/auth/logout";
+
 
 export default function DashboardNavbar() {
+  const { user } = useAuthContext();
+  const [profileUrl, setProfileUrl] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      fetchProfilePicture();
+    }
+  }, [user]);
+
+  const fetchProfilePicture = async () => {
+    if (!user) return;
+    
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.exists() && userDoc.data().profilePicture) {
+      setProfileUrl(userDoc.data().profilePicture);
+    }
+  };
+
+  const handleLogout = async () => {
+    const { error } = await logout();
+    if (!error) {
+      router.push("/login");
+    }
+  };
+
   return (
     <div className="border-b bg-background fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,15 +59,24 @@ export default function DashboardNavbar() {
               <NavigationMenuItem>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="flex items-center">
-                    <FaRegUserCircle className="h-10 w-10" />
+                    <Avatar>
+                      <AvatarImage src={profileUrl} />
+                      <AvatarFallback>
+                        {user?.email?.charAt(0).toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Billing</DropdownMenuItem>
-                    <DropdownMenuItem>Team</DropdownMenuItem>
-                    <DropdownMenuItem>Subscription</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/profile">Profile</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                      Log out
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </NavigationMenuItem>
