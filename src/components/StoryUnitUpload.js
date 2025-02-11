@@ -18,9 +18,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react"; // Make sure to install lucide-react
-import { MdOutlineDelete } from "react-icons/md";
-import Link from "next/link";
+import { Plus, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 const UNIT_TYPES = [
   { value: "interview", label: "Interview Transcript" },
@@ -28,6 +28,7 @@ const UNIT_TYPES = [
   { value: "quote", label: "Quote" },
   { value: "snippet", label: "Writing Snippet" },
   { value: "research", label: "Research Notes" },
+  { value: "background", label: "Background Information" },
 ];
 
 export default function StoryUnitUpload() {
@@ -35,30 +36,70 @@ export default function StoryUnitUpload() {
   const [unitText, setUnitText] = useState("");
   const [unitType, setUnitType] = useState("");
   const [storyUnits, setStoryUnits] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [generatedStory, setGeneratedStory] = useState("");
+  const router = useRouter();
+  const { toast } = useToast();
 
   const handleSubmit = () => {
     if (!unitText.trim() || !unitType) return;
 
-    const newUnit = {
-      id: Date.now(),
-      text: unitText.trim(),
-      type: unitType,
-      timestamp: new Date().toISOString(),
-    };
-
-    setStoryUnits([...storyUnits, newUnit]);
+    setStoryUnits([...storyUnits, { type: unitType, content: unitText.trim() }]);
     setUnitText("");
     setUnitType("");
     setIsModalOpen(false);
   };
 
-  const getPreviewText = (text) => {
-    return text.length > 150 ? text.substring(0, 150) + "..." : text;
+  const handleDeleteUnit = (index) => {
+    if (confirm("Are you sure you want to delete this story unit?")) {
+      setStoryUnits(storyUnits.filter((_, i) => i !== index));
+    }
   };
 
-  const handleDeleteUnit = (id) => {
-    if (confirm("Are you sure you want to delete this story unit?")) {
-      setStoryUnits(storyUnits.filter(unit => unit.id !== id));
+  const handleProcessUnits = async () => {
+    if (storyUnits.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please add at least one story unit before processing.",
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+    setGeneratedStory("");
+    
+    try {
+      const response = await fetch("/api/storygen", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ inputs: storyUnits }),
+      });
+
+      if (!response.ok) throw new Error("Story generation failed");
+
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setGeneratedStory(data.story);
+      toast({
+        title: "Success",
+        description: "Story generated successfully!",
+      });
+      
+    } catch (error) {
+      console.error("Error generating story:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to generate story",
+      });
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -81,10 +122,7 @@ export default function StoryUnitUpload() {
             <DialogTitle>Add New Story Unit</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <Select
-              value={unitType}
-              onValueChange={setUnitType}
-            >
+            <Select value={unitType} onValueChange={setUnitType}>
               <SelectTrigger>
                 <SelectValue placeholder="Select unit type" />
               </SelectTrigger>
@@ -99,7 +137,7 @@ export default function StoryUnitUpload() {
             <Textarea
               value={unitText}
               onChange={(e) => setUnitText(e.target.value)}
-              placeholder="Paste your content here..."
+              placeholder="Enter your story unit text..."
               className="min-h-[200px]"
             />
           </div>
@@ -115,40 +153,54 @@ export default function StoryUnitUpload() {
       </Dialog>
 
       <div className="grid grid-cols-1 gap-4 max-w-4xl mx-auto">
-        {storyUnits.map((unit) => (
-          <Card key={unit.id}>
+        <h2 className="text-lg font-semibold">Story Units</h2>
+        {storyUnits.map((unit, index) => (
+          <Card key={index}>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-sm font-medium">
-                {UNIT_TYPES.find(t => t.value === unit.type)?.label}
+                {UNIT_TYPES.find(t => t.value === unit.type)?.label || unit.type} - Unit {index + 1}
               </CardTitle>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => handleDeleteUnit(unit.id)}
+                onClick={() => handleDeleteUnit(index)}
                 className="h-8 w-8 p-0"
               >
                 <Trash2 className="h-4 w-4 text-gray-500 hover:text-red-500" />
               </Button>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">
-                {getPreviewText(unit.text)}
-              </p>
+              <p className="text-sm text-gray-600">{unit.content}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
-        <Link href="/dashboard/generation">
+      {generatedStory && (
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-lg font-semibold mb-4">Generated Story</h2>
+          <Card>
+            <CardContent className="prose prose-sm max-w-none p-6">
+              {generatedStory.split('\n').map((paragraph, index) => (
+                paragraph ? <p key={index}>{paragraph}</p> : <br key={index} />
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {storyUnits.length > 0 && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
           <Button
+            onClick={handleProcessUnits}
+            disabled={isProcessing}
             className="flex items-center gap-2 px-12 shadow-lg"
             size="lg"
           >
-            Continue
+            {isProcessing ? "Processing..." : "Process Story Units"}
           </Button>
-        </Link>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

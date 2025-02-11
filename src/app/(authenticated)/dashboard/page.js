@@ -39,13 +39,17 @@ export default function Dashboard() {
       return;
     }
 
-    const fetchQuizzes = async () => {
-      const { result, error } = await getUserQuizzes(user.uid);
-      if (error) {
-        console.error("Error fetching quizzes:", error);
-        return;
-      }
-      setQuizzes(result);
+    // const fetchQuizzes = async () => {
+    //   const { result, error } = await getUserQuizzes(user.uid);
+    //   if (error) {
+    //     console.error("Error fetching quizzes:", error);
+    //     return;
+    //   }
+    //   setQuizzes(result);
+    //   setLoading(false);
+    // };
+
+    const fetchQuizzes = () => {
       setLoading(false);
     };
 
@@ -129,63 +133,9 @@ export default function Dashboard() {
         <Button className="w-full max-w-7xl my-2">+ Create New Story</Button>
       </Link>
       <Separator className="my-6 max-w-7xl" />
-      {quizzes.length === 0 ? (
-        <p className=" text-gray-500">
-          No stories created yet. Create your first story!
-        </p>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl">
-          {quizzes.map((quiz) => (
-            <Card key={quiz.id} className="w-full">
-              <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="relative h-[200px] md:h-full">
-                  <Image
-                    src="/studying.jpg"
-                    alt="Quiz thumbnail"
-                    fill
-                    className="object-cover rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
-                  />
-                </div>
-                <div className="p-6 flex flex-col justify-center">
-                  <CardHeader className="p-0 mb-4">
-                    {/* <CardTitle className="text-2xl break-words hyphens-auto overflow-wrap-anywhere">{quiz.title}</CardTitle> */}
-                    <CardTitle className="text-2xl whitespace-nowrap overflow-hidden text-ellipsis">
-                      {quiz.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardFooter className="p-0 mt-4 flex gap-2">
-                    <Link
-                      href={`/dashboard/${formatTitle(quiz.title)}`}
-                      className="flex-1"
-                    >
-                      <Button className="w-full">View</Button>
-                    </Link>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="icon">
-                          <TbSettings className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => setQuizToRename(quiz)}>
-                          <span>Rename</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => handleDeleteClick(quiz)}
-                        >
-                          <span>Delete</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </CardFooter>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      )}
-
+      <p className=" text-gray-500">
+        No stories created yet. Create your first story!
+      </p>
       <DeleteQuizModal
         isOpen={deleteModalOpen}
         onClose={() => {
@@ -206,3 +156,61 @@ export default function Dashboard() {
     </div>
   );
 }
+
+
+// {quizzes.length === 0 ? (
+//   <p className=" text-gray-500">
+//     No stories created yet. Create your first story!
+//   </p>
+// ) : (
+//   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl">
+//     {quizzes.map((quiz) => (
+//       <Card key={quiz.id} className="w-full">
+//         <div className="grid grid-cols-1 md:grid-cols-2">
+//           <div className="relative h-[200px] md:h-full">
+//             <Image
+//               src="/studying.jpg"
+//               alt="Quiz thumbnail"
+//               fill
+//               className="object-cover rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
+//             />
+//           </div>
+//           <div className="p-6 flex flex-col justify-center">
+//             <CardHeader className="p-0 mb-4">
+//               {/* <CardTitle className="text-2xl break-words hyphens-auto overflow-wrap-anywhere">{quiz.title}</CardTitle> */}
+//               <CardTitle className="text-2xl whitespace-nowrap overflow-hidden text-ellipsis">
+//                 {quiz.title}
+//               </CardTitle>
+//             </CardHeader>
+//             <CardFooter className="p-0 mt-4 flex gap-2">
+//               <Link
+//                 href={`/dashboard/${formatTitle(quiz.title)}`}
+//                 className="flex-1"
+//               >
+//                 <Button className="w-full">View</Button>
+//               </Link>
+//               <DropdownMenu>
+//                 <DropdownMenuTrigger asChild>
+//                   <Button variant="outline" size="icon">
+//                     <TbSettings className="h-4 w-4" />
+//                   </Button>
+//                 </DropdownMenuTrigger>
+//                 <DropdownMenuContent>
+//                   <DropdownMenuItem onClick={() => setQuizToRename(quiz)}>
+//                     <span>Rename</span>
+//                   </DropdownMenuItem>
+//                   <DropdownMenuItem
+//                     className="text-destructive"
+//                     onClick={() => handleDeleteClick(quiz)}
+//                   >
+//                     <span>Delete</span>
+//                   </DropdownMenuItem>
+//                 </DropdownMenuContent>
+//               </DropdownMenu>
+//             </CardFooter>
+//           </div>
+//         </div>
+//       </Card>
+//     ))}
+//   </div>
+// )}
