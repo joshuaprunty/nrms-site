@@ -21,6 +21,9 @@ import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useAuthContext } from "@/context/AuthContext";
+import saveStory from "@/firebase/firestore/saveStory";
+import SaveStoryModal from "./SaveStoryModal";
 
 const UNIT_TYPES = [
   { value: "interview", label: "Interview Transcript" },
@@ -40,6 +43,10 @@ export default function StoryUnitUpload() {
   const [generatedStory, setGeneratedStory] = useState("");
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useAuthContext();
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveDisabled, setSaveDisabled] = useState(false);
 
   const handleSubmit = () => {
     if (!unitText.trim() || !unitType) return;
@@ -100,6 +107,50 @@ export default function StoryUnitUpload() {
       });
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleSaveStory = async (title) => {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const storyData = {
+        title,
+        storyUnits,
+        generatedStory,
+      };
+
+      const { error } = await saveStory(user.uid, storyData);
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error,
+        });
+        return;
+      }
+
+      setIsSaveModalOpen(false);
+      setSaveDisabled(true);
+
+      toast({
+        variant: "success",
+        title: "Story Saved",
+        description: "Your story has been successfully saved. Navigating to dashboard...",
+      });
+
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 3000);
+    } catch (error) {
+      console.error("Error saving story:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -189,6 +240,18 @@ export default function StoryUnitUpload() {
         </div>
       )}
 
+      {generatedStory && (
+        <div className="flex justify-center mt-4">
+          <Button
+            onClick={() => setIsSaveModalOpen(true)}
+            className="px-12"
+            disabled={saveDisabled}
+          >
+            Save Story
+          </Button>
+        </div>
+      )}
+
       {storyUnits.length > 0 && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
           <Button
@@ -201,6 +264,13 @@ export default function StoryUnitUpload() {
           </Button>
         </div>
       )}
+
+      <SaveStoryModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        onSave={handleSaveStory}
+        loading={isSaving}
+      />
     </div>
   );
 }
