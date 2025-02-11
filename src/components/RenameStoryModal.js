@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 
-export default function RenameQuizModal({ isOpen, onClose, onRename, currentTitle }) {
+export default function RenameStoryModal({ isOpen, onClose, onRename, currentTitle }) {
   const [newTitle, setNewTitle] = useState("");
 
   // Update newTitle when the modal opens with a new quiz
@@ -30,7 +30,7 @@ export default function RenameQuizModal({ isOpen, onClose, onRename, currentTitl
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Rename Quiz</DialogTitle>
+          <DialogTitle>Rename Story</DialogTitle>
         </DialogHeader>
         <div className="py-4">
           <Input

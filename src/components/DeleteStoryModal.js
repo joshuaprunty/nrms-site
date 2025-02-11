@@ -8,21 +8,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
-export default function DeleteQuizModal({
+export default function DeleteStoryModal({
   isOpen,
   onClose,
   onConfirm,
   loading,
-  quizTitle,
+  storyTitle,
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Quiz</DialogTitle>
+          <DialogTitle>Delete Story</DialogTitle>
         </DialogHeader>
         <DialogDescription className="py-4">
-          Are you sure you want to delete "{quizTitle}"? This action cannot be
+          Are you sure you want to delete "{storyTitle}"? This action cannot be
           undone.
         </DialogDescription>
 
@@ -37,11 +37,12 @@ export default function DeleteQuizModal({
           </Button>
           <Button
             type="button"
+          
             variant="destructive"
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? "Deleting..." : "Delete Quiz"}
+            {loading ? "Deleting..." : "Delete Story"}
           </Button>
         </DialogFooter>
       </DialogContent>

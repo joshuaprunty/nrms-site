@@ -1,11 +1,13 @@
 "use client";
-import DeleteQuizModal from "@/components/DeleteQuizModal";
+import DeleteStoryModal from "@/components/DeleteStoryModal";
 import { useAuthContext } from "@/context/AuthContext";
-import deleteQuiz from "@/firebase/firestore/deleteQuiz";
+import deleteStory from "@/firebase/firestore/deleteStory";
 import getUserStories from "@/firebase/firestore/getUserStories";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TbSettings } from "react-icons/tb";
+import { doc, updateDoc, getFirestore } from "firebase/firestore";
+import firebase_app from "@/firebase/config";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
+import RenameStoryModal from "@/components/RenameStoryModal";
 
 export default function Dashboard() {
   const { user } = useAuthContext();
@@ -28,6 +31,8 @@ export default function Dashboard() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedStory, setSelectedStory] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [renameModalOpen, setRenameModalOpen] = useState(false);
+  const [selectedStoryForRename, setSelectedStoryForRename] = useState(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -87,6 +92,36 @@ export default function Dashboard() {
     }
   };
 
+  const handleRenameConfirm = async (newTitle) => {
+    if (!selectedStoryForRename || !user) return;
+
+    try {
+      const storyRef = doc(getFirestore(firebase_app), 
+        `users/${user.uid}/stories/${selectedStoryForRename.id}`);
+      
+      await updateDoc(storyRef, {
+        title: newTitle,
+        updatedAt: new Date().toISOString()
+      });
+
+      // Refresh stories list
+      const { result } = await getUserStories(user.uid);
+      setStories(result);
+      
+      toast({
+        title: "Success",
+        description: "Story renamed successfully.",
+      });
+    } catch (error) {
+      console.error("Error renaming story:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to rename story.",
+      });
+    }
+  };
+
   if (loading) {
     return <div className="p-8">Loading...</div>;
   }
@@ -136,6 +171,14 @@ export default function Dashboard() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuItem
+                          onClick={() => {
+                            setSelectedStoryForRename(story);
+                            setRenameModalOpen(true);
+                          }}
+                        >
+                          Rename
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
                           className="text-destructive"
                           onClick={() => handleDeleteClick(story)}
                         >
@@ -151,7 +194,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <DeleteQuizModal
+      <DeleteStoryModal
         isOpen={deleteModalOpen}
         onClose={() => {
           setDeleteModalOpen(false);
@@ -159,7 +202,17 @@ export default function Dashboard() {
         }}
         onConfirm={handleDeleteConfirm}
         loading={isDeleting}
-        quizTitle={selectedStory?.title}
+        storyTitle={selectedStory?.title}
+      />
+
+      <RenameStoryModal
+        isOpen={renameModalOpen}
+        onClose={() => {
+          setRenameModalOpen(false);
+          setSelectedStoryForRename(null);
+        }}
+        onRename={handleRenameConfirm}
+        currentTitle={selectedStoryForRename?.title}
       />
     </div>
   );

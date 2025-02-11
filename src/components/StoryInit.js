@@ -12,12 +12,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/toaster";
 import { useAuthContext } from "@/context/AuthContext";
-import saveQuiz from "@/firebase/firestore/saveQuiz";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import SaveQuizModal from "./SaveQuizModal";
-import QuizConfigModal from "./QuizConfigModal";
 import FormatCard from "./FormatCard";
 import Link from "next/link";
 export default function TextInput() {
@@ -87,52 +84,6 @@ export default function TextInput() {
     setEditingCorrectAnswer(answer);
   };
 
-  const handleSaveEdit = () => {
-    const question = questions[editingIndex];
-    
-    if (question.type === 'short-answer') {
-      if (!editingCorrectAnswer?.trim()) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Please enter a correct answer before saving.",
-        });
-        return;
-      }
-    } else {
-      // For multiple choice and true-false questions
-      if (!question.answers.includes(editingCorrectAnswer)) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Please select a correct answer before saving.",
-        });
-        return;
-      }
-
-      if (question.answers.some((answer) => !answer.trim())) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "All answer choices must be filled out before saving.",
-        });
-        return;
-      }
-    }
-
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((q, i) => {
-        if (i === editingIndex) {
-          return { ...q, correct_answer: editingCorrectAnswer };
-        }
-        return q;
-      })
-    );
-
-    setEditingIndex(null);
-    setEditingCorrectAnswer(null);
-    setCheckedAnswers({});
-  };
 
   const analyzeText = async () => {
     if (!studyText.trim()) {
@@ -238,63 +189,6 @@ export default function TextInput() {
     });
   };
 
-  const handleSaveQuiz = async (title) => {
-    if (!user) {
-      console.error("User not authenticated");
-      return;
-    }
-
-    // Validate that all questions have non-empty answers
-    for (const question of questions) {
-      if (question.type !== 'short-answer' && question.answers.some((answer) => !answer.trim())) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "All answer choices in the quiz must be filled out.",
-        });
-        return;
-      }
-    }
-
-    setIsSaving(true);
-    try {
-      const quizData = {
-        title,
-        questions,
-        originalText: studyText,
-      };
-
-      const { error } = await saveQuiz(user.uid, quizData);
-
-      // quiz already exists with title
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: error,
-        });
-        return;
-      }
-
-      setIsSaveModalOpen(false);
-      setSaveDisabled(true);
-
-      toast({
-        variant: "success",
-        title: "Quiz Saved",
-        description:
-          "Your quiz has been successfully saved. Navigating to dashboard...",
-      });
-
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 3000);
-    } catch (error) {
-      console.error("Error saving quiz:", error);
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   const handleDeleteQuestion = (index) => {
     if (confirm(`Delete Question ${index + 1}?`)) {
