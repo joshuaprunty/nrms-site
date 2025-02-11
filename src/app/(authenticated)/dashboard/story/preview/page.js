@@ -21,6 +21,10 @@ export default function StoryPreview() {
   const router = useRouter();
   const { user } = useAuthContext();
 
+  // Add new state for editing mode and editable story
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableStory, setEditableStory] = useState(storyData?.story || '');
+
   const handleSaveStory = async (title) => {
     if (!user || !storyData) return;
 
@@ -29,6 +33,7 @@ export default function StoryPreview() {
       const { error } = await saveStory(user.uid, {
         title,
         ...storyData,
+        story: editableStory, // Use the edited story content
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
@@ -71,15 +76,26 @@ export default function StoryPreview() {
       
       <Card>
         <CardContent className="prose prose-sm max-w-none p-6">
-          {storyData.story.split('\n').map((paragraph, index) => (
-            paragraph ? <p key={index}>{paragraph}</p> : <br key={index} />
-          ))}
+          {isEditing ? (
+            <textarea
+              value={editableStory}
+              onChange={(e) => setEditableStory(e.target.value)}
+              className="w-full h-[500px] p-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          ) : (
+            editableStory.split('\n').map((paragraph, index) => (
+              paragraph ? <p key={index}>{paragraph}</p> : <br key={index} />
+            ))
+          )}
         </CardContent>
       </Card>
 
       <div className="flex justify-end gap-4">
-        <Button variant="outline" onClick={() => router.back()}>
-          Edit
+        <Button 
+          variant="outline" 
+          onClick={() => setIsEditing(!isEditing)}
+        >
+          {isEditing ? 'Preview' : 'Edit'}
         </Button>
         <Button onClick={() => setIsSaveModalOpen(true)}>
           Save Story
