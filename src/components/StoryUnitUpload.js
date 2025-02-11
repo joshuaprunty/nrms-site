@@ -47,6 +47,7 @@ export default function StoryUnitUpload() {
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveDisabled, setSaveDisabled] = useState(false);
+  const [fullStoryObject, setFullStoryObject] = useState(null);
 
   const handleSubmit = () => {
     if (!unitText.trim() || !unitType) return;
@@ -74,7 +75,6 @@ export default function StoryUnitUpload() {
     }
 
     setIsProcessing(true);
-    setGeneratedStory("");
     
     try {
       const response = await fetch("/api/storygen", {
@@ -92,11 +92,9 @@ export default function StoryUnitUpload() {
         throw new Error(data.error);
       }
 
-      setGeneratedStory(data.story);
-      toast({
-        title: "Success",
-        description: "Story generated successfully!",
-      });
+      // Instead of setting state, redirect to the preview page with the story data
+      const encodedStory = encodeURIComponent(JSON.stringify(data));
+      router.push(`/dashboard/story/preview?data=${encodedStory}`);
       
     } catch (error) {
       console.error("Error generating story:", error);
@@ -120,8 +118,9 @@ export default function StoryUnitUpload() {
     try {
       const storyData = {
         title,
-        storyUnits,
-        generatedStory,
+        ...fullStoryObject,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
       const { error } = await saveStory(user.uid, storyData);
