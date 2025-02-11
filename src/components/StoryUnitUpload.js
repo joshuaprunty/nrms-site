@@ -24,7 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthContext } from "@/context/AuthContext";
 import saveStory from "@/firebase/firestore/saveStory";
 import SaveStoryModal from "./SaveStoryModal";
-
+import { Separator } from "@/components/ui/separator";
 const UNIT_TYPES = [
   { value: "interview", label: "Interview Transcript" },
   { value: "data", label: "Data/Statistics" },
@@ -154,18 +154,7 @@ export default function StoryUnitUpload() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-center">
-        <Button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-12 w-full max-w-4xl"
-          size="lg"
-        >
-          <Plus className="w-5 h-5" />
-          Add Story Unit
-        </Button>
-      </div>
-
+    <div className="space-y-6 mt-12">
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[525px]">
           <DialogHeader>
@@ -202,8 +191,17 @@ export default function StoryUnitUpload() {
         </DialogContent>
       </Dialog>
 
-      <div className="grid grid-cols-1 gap-4 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 gap-4 max-w-4xl">
         <h2 className="text-lg font-semibold">Story Units</h2>
+        <Separator />
+        <Button
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center gap-2 px-12 w-full max-w-4xl"
+          size="lg"
+        >
+          <Plus className="w-5 h-5" />
+          Add Story Unit
+        </Button>
         {storyUnits.map((unit, index) => (
           <Card key={index}>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -220,7 +218,12 @@ export default function StoryUnitUpload() {
               </Button>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">{unit.content}</p>
+              <div className="relative h-[100px] overflow-hidden bg-white">
+                <p className="text-sm text-gray-600 line-clamp-8">
+                  {unit.content}
+                </p>
+                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent" />
+              </div>
             </CardContent>
           </Card>
         ))}

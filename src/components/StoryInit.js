@@ -439,7 +439,7 @@ export default function TextInput() {
         </Link> */}
       </div>
       <div className="flex justify-center">
-        <Button>
+        <Button disabled>
           Advanced Configuration
         </Button>
       </div>

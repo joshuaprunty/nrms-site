@@ -109,13 +109,11 @@ export default function Dashboard() {
           {stories.map((story) => (
             <Card key={story.id} className="w-full">
               <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="relative h-[200px] md:h-full">
-                  <Image
-                    src="/writing.jpg"
-                    alt="Story thumbnail"
-                    fill
-                    className="object-cover rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
-                  />
+                <div className="relative h-[200px] md:h-full p-4 bg-slate-50 overflow-hidden">
+                  <p className="text-xs text-gray-600 line-clamp-[12]">
+                    {story.story}
+                  </p>
+                  <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-50 to-transparent" />
                 </div>
                 <div className="p-6 flex flex-col justify-center">
                   <CardHeader className="p-0 mb-4">
