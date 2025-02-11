@@ -1,0 +1,21 @@
+PROFILE/GLOBAL
+- feed in stories you have written to train to your own writing style
+
+CREATE WORKFLOW
+1. Select format
+2. Upload/Input starting materials/source
+3. Input additional training/reference stories
+4. Prioritizing/Organizing topics and sources 
+5. General config (word count etc, cater to regions, tone, etc.)
+6. Generation dashboard - interactive editing
+7. Finish/save/export
+
+STORY UNIT INPUT TYPES
+- Interviews (audio or transcript)
+- Small notes or facts
+- Reference stories
+- Images/Video
+- Data/Numbers/Statistics set
+
+OTHER NOTES
+- Figure out what our 'atomic units' are (eg breaking down an interview into question answer pairs)
