@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { TbSettings } from "react-icons/tb";
 import { doc, updateDoc, getFirestore } from "firebase/firestore";
 import firebase_app from "@/firebase/config";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,8 +19,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import Image from "next/image";
-import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import RenameStoryModal from "@/components/RenameStoryModal";
 

@@ -1,14 +1,5 @@
 import React from 'react'
 import Image from "next/image";
-import { Section } from '@/components/Section';
-import { HeroSection } from '@/components/HeroSection';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
 import {
   Card,
   CardContent,
@@ -17,9 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-
 
 const FormatCard = ({ title, description }) => {
   return (
