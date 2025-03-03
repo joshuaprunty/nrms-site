@@ -1,0 +1,29 @@
+WORKFLOW
+- Landing Page
+- Login
+- Dashboard - view existing stories or create new
+
+PROFILE/GLOBAL
+- feed in stories you have written to train to your own writing style
+
+OTHER
+- Integrate with MetraCool (Analytics, tailor to successful story elements in relevant domain)
+
+- CREATE NEW 
+1. Select format
+2. Upload/Input starting materials/source
+3. Input additional training/reference stories
+4. Prioritizing/Organizing topics and sources 
+5. General config (word count etc, cater to regions, tone, etc.)
+6. Generation dashboard - interactive editing
+7. Finish/save/export
+
+Notes
+- Figure out what our 'atomic units' are (eg breaking down an interview into question answer pairs)
+
+Types of Input
+- Interviews (audio or transcript)
+- Small notes or facts
+- Reference stories
+- Images/Video
+- Data/Numbers/Statistics set
