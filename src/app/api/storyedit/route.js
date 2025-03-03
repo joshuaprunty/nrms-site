@@ -60,7 +60,7 @@ Please provide an edited version of the story that follows these instructions. M
 
     // Call the OpenAI API
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: "You are a professional editor who helps improve stories while maintaining their original intent and style." },
         { role: "user", content: prompt }

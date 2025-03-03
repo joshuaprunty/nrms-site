@@ -21,7 +21,7 @@ Interview to split:
 ${input}`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [
         { 
           role: "system", 
@@ -29,7 +29,7 @@ ${input}`;
         },
         { role: "user", content: prompt }
       ],
-      max_tokens: 6000,
+      max_tokens: 4000,
       temperature: 0.1 // Lower temperature for more consistent formatting
     });
     

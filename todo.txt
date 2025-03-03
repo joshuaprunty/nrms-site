@@ -10,13 +10,7 @@ CREATE WORKFLOW
 6. Generation dashboard - interactive editing
 7. Finish/save/export
 
-STORY UNIT INPUT TYPES
-- Interviews (audio or transcript)
-- Small notes or facts
-- Reference stories
-- Images/Video
-- Data/Numbers/Statistics set
-- Background info
+
 
 OTHER NOTES
 - Figure out what our 'atomic units' are (eg breaking down an interview into question answer pairs)

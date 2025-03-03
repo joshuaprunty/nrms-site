@@ -17,7 +17,6 @@ const InputTypes = z.enum([
 const StoryUnit = z.object({
   type: InputTypes,
   content: z.string(),
-  title: z.string().optional(),
   priority: z.number().int().positive().optional(),
 });
 
