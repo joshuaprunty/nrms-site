@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function ProcessingWorkflow({ storyUnits, storyType }) {
   const [currentUnitIndex, setCurrentUnitIndex] = useState(0);
   const [processedUnits, setProcessedUnits] = useState([]);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isProcessingComplete, setIsProcessingComplete] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -20,34 +20,15 @@ export default function ProcessingWorkflow({ storyUnits, storyType }) {
     if (currentUnitIndex < storyUnits.length - 1) {
       setCurrentUnitIndex(currentUnitIndex + 1);
     } else {
-      // All units processed, generate story
-      setIsGenerating(true);
-      try {
-        const response = await fetch("/api/storygen", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            inputs: newProcessedUnits,
-            storyType: storyType || 'article' // Default to article if no type provided
-          }),
-        });
-
-        if (!response.ok) throw new Error("Failed to generate story");
-        
-        const storyData = await response.json();
-        const encodedStory = encodeURIComponent(JSON.stringify(storyData));
-        router.push(`/dashboard/story/preview?data=${encodedStory}${storyType ? `&type=${storyType}` : ''}`);
-      } catch (error) {
-        console.error("Error generating story:", error);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to generate story",
-        });
-      } finally {
-        setIsGenerating(false);
-      }
+      // All units processed, mark processing as complete
+      setIsProcessingComplete(true);
     }
+  };
+
+  const handleContinue = () => {
+    // Redirect to the configuration page
+    const encodedUnits = encodeURIComponent(JSON.stringify(processedUnits));
+    router.push(`/dashboard/story/configure?units=${encodedUnits}${storyType ? `&type=${storyType}` : ''}`);
   };
 
   const currentUnit = storyUnits[currentUnitIndex];
@@ -56,14 +37,31 @@ export default function ProcessingWorkflow({ storyUnits, storyType }) {
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">
-          {isGenerating ? "Generating Story..." : `Processing Unit ${currentUnitIndex + 1} of ${storyUnits.length}`}
+          {isProcessingComplete 
+            ? "Processing Complete" 
+            : `Processing Unit ${currentUnitIndex + 1} of ${storyUnits.length}`}
         </h2>
-        <p className="text-sm text-gray-500">
-          Type: {currentUnit.type}
-        </p>
+        {!isProcessingComplete && (
+          <p className="text-sm text-gray-500">
+            Type: {currentUnit.type}
+          </p>
+        )}
       </div>
 
-      {currentUnit.type === "interview" ? (
+      {isProcessingComplete ? (
+        <div className="text-center space-y-6 py-8">
+          <h3 className="text-xl font-medium">All units have been processed successfully!</h3>
+          <p className="text-gray-500">
+            You can now configure and generate your story.
+          </p>
+          <Button 
+            size="lg"
+            onClick={handleContinue}
+          >
+            Configure & Continue
+          </Button>
+        </div>
+      ) : currentUnit.type === "interview" ? (
         <InterviewProcessor 
           content={currentUnit.content}
           onProcessed={handleUnitProcessed}

@@ -31,7 +31,10 @@ const ResponseSchema = z.object({
 
 export async function POST(request) {
   try {
-    const { inputs } = await request.json();
+    const { inputs, config = {} } = await request.json();
+    
+    // Extract configuration options
+    const { minLength, maxLength, additionalInstructions } = config;
     
     // Validate inputs array against StoryUnit schema
     const validatedInputs = z.array(StoryUnit).parse(inputs);
@@ -63,12 +66,26 @@ When incorporating different types of inputs:
     - Research notes should be synthesized into the narrative
     - Background information should provide context`;
 
+    // Add length constraints if provided
+    if (minLength && maxLength) {
+      prompt += `\n\nThe article should be between ${minLength} and ${maxLength} words in length.`;
+    } else if (minLength) {
+      prompt += `\n\nThe article should be at least ${minLength} words in length.`;
+    } else if (maxLength) {
+      prompt += `\n\nThe article should be at most ${maxLength} words in length.`;
+    }
+    
+    // Add additional instructions if provided
+    if (additionalInstructions) {
+      prompt += `\n\nAdditional instructions: ${additionalInstructions}`;
+    }
+
     const response = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
         { role: "user", content: prompt }
       ],
-      max_tokens: 800
+      max_tokens: 1500
     });
     
     const generatedStory = response.choices[0].message.content;

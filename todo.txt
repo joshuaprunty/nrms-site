@@ -13,6 +13,5 @@ CREATE WORKFLOW
 
 
 OTHER NOTES
-- Figure out what our 'atomic units' are (eg breaking down an interview into question answer pairs)
 - Pulling priorities from goal of the story versus manually element-by-element
 - Detecting anecdotes versus quotes versus factual etc
