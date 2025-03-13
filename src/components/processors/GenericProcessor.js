@@ -24,38 +24,69 @@ export default function GenericProcessor({ unit, onProcessed }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedContent, setProcessedContent] = useState(null);
 
+  // const handleProcess = async () => {
+  //   setIsProcessing(true);
+    
+  //   // If content is longer than 300 words, attempt to summarize
+  //   const wordCount = editedContent.split(/\s+/).length;
+    
+  //   if (wordCount > 300) {
+  //     try {
+  //       const response = await fetch("/api/summarize", {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ 
+  //           content: editedContent,
+  //           type: unit.type
+  //         }),
+  //       });
+        
+  //       const data = await response.json();
+  //       if (data.error) {
+  //         throw new Error(data.error);
+  //       }
+        
+  //       setProcessedContent(data.summary);
+  //     } catch (error) {
+  //       console.error("Error processing content:", error);
+  //       // If error, just use the original content
+  //       setProcessedContent(editedContent);
+  //     }
+  //   } else {
+  //     // If content is short enough, use as is
+  //     setProcessedContent(editedContent);
+  //   }
+    
+  //   setIsProcessing(false);
+  // };
+
+
   const handleProcess = async () => {
     setIsProcessing(true);
+
+    console.log(unit.content);
     
-    // If content is longer than 300 words, attempt to summarize
-    const wordCount = editedContent.split(/\s+/).length;
-    
-    if (wordCount > 300) {
-      try {
-        const response = await fetch("/api/summarize", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            content: editedContent,
-            type: unit.type
-          }),
-        });
-        
-        const data = await response.json();
-        if (data.error) {
-          throw new Error(data.error);
-        }
-        
-        setProcessedContent(data.summary);
-      } catch (error) {
-        console.error("Error processing content:", error);
-        // If error, just use the original content
-        setProcessedContent(editedContent);
+    try {
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          content: unit.content,
+        }),
+      });
+      
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
       }
-    } else {
-      // If content is short enough, use as is
+      
+      setProcessedContent(data);
+    } catch (error) {
+      console.error("Error processing content:", error);
+      // If error, just use the original content
       setProcessedContent(editedContent);
     }
+
     
     setIsProcessing(false);
   };
@@ -85,7 +116,7 @@ export default function GenericProcessor({ unit, onProcessed }) {
       </Card>
 
       <div className="flex items-center gap-4">
-        <Select value={importance} onValueChange={setImportance}>
+        {/* <Select value={importance} onValueChange={setImportance}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Select importance" />
           </SelectTrigger>
@@ -96,7 +127,7 @@ export default function GenericProcessor({ unit, onProcessed }) {
               </SelectItem>
             ))}
           </SelectContent>
-        </Select>
+        </Select> */}
 
         <Button
           onClick={handleProcess}
